@@ -12,12 +12,15 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.List;
+
 public class AddActivity extends AppCompatActivity {
     private TimePicker timePicker;
     private EditText editText;
     private Button buttonSave, buttonCancel;
     private Alarm alarm;
     private boolean needRefresh;
+    private boolean isUpdating;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -25,10 +28,19 @@ public class AddActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
 
+        isUpdating = false;
         timePicker = findViewById(R.id.timePicker);
         editText = findViewById(R.id.name);
         buttonSave = findViewById(R.id.button_save);
         buttonCancel = findViewById(R.id.button_cancel);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            timePicker.setHour(extras.getInt("hour"));
+            timePicker.setMinute(extras.getInt("minute"));
+            editText.setText(extras.getString("name"));
+            isUpdating = true;
+        }
 
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,7 +51,14 @@ public class AddActivity extends AppCompatActivity {
 
                 DatabaseHelper db = new DatabaseHelper(getApplicationContext());
                 alarm = new Alarm(hour, minute, true, name);
-                db.addAlarm(alarm);
+
+                if (isUpdating) {
+                    alarm.setId(extras.getInt("id"));
+                    db.updateAlarm(alarm);
+                }
+                else {
+                    db.addAlarm(alarm);
+                }
                 needRefresh = true;
                 onBackPressed();
             }

@@ -85,4 +85,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.update(TABLE_NAME, values, COLUMN_ALARM_ID + " = ? ",
                 new String[]{String.valueOf(alarm.getId())});
     }
+
+    public void deleteAlarm(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NAME, COLUMN_ALARM_ID + " = ? ", new String[]{String.valueOf(id)});
+        db.close();
+    }
 }
