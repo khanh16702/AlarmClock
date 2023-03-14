@@ -86,8 +86,9 @@ public class TimerActivity extends AppCompatActivity implements View.OnClickList
                     elapsedTime = 0;
                     updateTimerText(elapsedTime);
                 }
-                Intent toMain = new Intent(TimerActivity.this, MainActivity.class);
-                startActivityForResult(toMain, REQUEST_CODE);
+                onBackPressed();
+//                Intent toMain = new Intent(TimerActivity.this, MainActivity.class);
+//                startActivityForResult(toMain, REQUEST_CODE);
                 break;
             default:
                 break;

@@ -15,8 +15,6 @@ import android.widget.ToggleButton;
 import java.util.Calendar;
 import java.util.List;
 
-import kotlinx.coroutines.internal.AtomicOp;
-
 public class CustomAdapter extends BaseAdapter {
     private Context context;
     private List<Alarm> alarmList;
@@ -56,6 +54,7 @@ public class CustomAdapter extends BaseAdapter {
         nameTxtView.setText(selectedAlarm.getName());
         alarmTxtView.setText(selectedAlarm.toString());
         final Intent serviceIntent = new Intent(context, AlarmReceiver.class);
+        serviceIntent.putExtra("alarmName", selectedAlarm.getName());
 
         final Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, selectedAlarm.getHour());

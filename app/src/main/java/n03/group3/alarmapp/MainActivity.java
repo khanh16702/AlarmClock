@@ -84,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        createNotificationChannel();
+
         // Timer
         btnTimer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,19 +157,33 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        boolean needRefresh = data.getExtras().getBoolean("needRefresh");
-        if (needRefresh) {
-            alarmList.clear();
-            List<Alarm> list = db.getAllAlarms();
-            alarmList.addAll(list);
-            customAdapter.notifyDataSetChanged();
-            if (listView.getCount() > 0) {
-                txtWelcome.setText("");
-            }
-            else {
-                txtWelcome.setText("Welcome To Alarm App");
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
+            boolean needRefresh = data.getExtras().getBoolean("needRefresh");
+            if (needRefresh) {
+                alarmList.clear();
+                List<Alarm> list = db.getAllAlarms();
+                alarmList.addAll(list);
+                customAdapter.notifyDataSetChanged();
+                if (listView.getCount() > 0) {
+                    txtWelcome.setText("");
+                }
+                else {
+                    txtWelcome.setText("Welcome To Alarm App");
+                }
             }
         }
+    }
 
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "name";
+            String desc = "Channel for Alarm Manager";
+            int imp = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("alarmChannel", name, imp);
+            channel.setDescription(desc);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }

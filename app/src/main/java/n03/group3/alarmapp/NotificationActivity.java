@@ -18,8 +18,6 @@ public class NotificationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
 
-        btnBackToMain = findViewById(R.id.btnBackToMain);
-        Intent toMainIntent = new Intent(this, MainActivity.class);
-        startActivityForResult(toMainIntent, 100);
+        onBackPressed();
     }
 }
