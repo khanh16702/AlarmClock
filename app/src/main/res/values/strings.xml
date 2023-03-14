@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">AlarmApp</string>
+    <string name="app_name">Alarm Clock</string>
+    <string name="cancel">Cancel</string>
+    <string name="add">Add</string>
 </resources>

@@ -1,7 +1,9 @@
 package n03.group3.alarmapp;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -12,76 +14,58 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private Button btnSetTime;
-    private Button btnStop;
-    private Button btnAlarmList;
-    private TimePicker timePicker;
-    private Calendar calendar;
-    AlarmManager alarmManager;
-    PendingIntent pendingIntent;
+    public static String activeAlarm  = "";
+    private ListView listView;
+    private Button btnAdd;
+    private static final int REQUEST_CODE = 1000;
+
+    public static List<Alarm> alarmList = new ArrayList<>();
+    private CustomAdapter customAdapter;
+    private DatabaseHelper db = new DatabaseHelper(this);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        btnSetTime = findViewById(R.id.btnSetTime);
-        btnStop = findViewById(R.id.btnStop);
-        btnAlarmList = findViewById(R.id.btnAlarmList);
-        timePicker = findViewById(R.id.timePicker);
-        calendar = Calendar.getInstance();
-        alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
 
-        createNotificationChannel();
-
-        btnSetTime.setOnClickListener(new View.OnClickListener() {
+        btnAdd = findViewById(R.id.add);
+        btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
-                calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
-
-                String hour = String.valueOf(timePicker.getCurrentHour());
-                String minute = String.valueOf(timePicker.getCurrentMinute());
-
-                intent.putExtra("activateAlarm", "on");
-
-                pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0,
-                        intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-
-                Toast.makeText(MainActivity.this, "Set alarm successfully!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, AddActivity.class);
+                startActivityForResult(intent, REQUEST_CODE);
             }
         });
-
-        btnStop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alarmManager.cancel(pendingIntent);
-
-                intent.putExtra("activateAlarm", "off");
-                sendBroadcast(intent);
-            }
-        });
-
+        listView = findViewById(R.id.listView);
+        List<Alarm> list = db.getAllAlarms();
+        alarmList.addAll(list);
+        customAdapter = new CustomAdapter(getApplicationContext(), alarmList);
+        listView.setAdapter(customAdapter);
     }
 
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "name";
-            String desc = "Channel for Alarm Manager";
-            int imp = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel("alarmChannel", name, imp);
-            channel.setDescription(desc);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
+            boolean needRefresh = data.getExtras().getBoolean("needRefresh");
+            if (needRefresh) {
+                alarmList.clear();
+                List<Alarm> list = db.getAllAlarms();
+                alarmList.addAll(list);
+                customAdapter.notifyDataSetChanged();
+            }
         }
+
     }
 }
