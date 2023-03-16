@@ -46,7 +46,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="@dimen/margin"
-        android:text="Add Alarm" />
+        android:text="Alarm" />
+
+    <Button
+        android:id="@+id/countdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Count" />
 
     <Button
         android:id="@+id/timer"

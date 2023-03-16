@@ -64,9 +64,9 @@ public class Alarm implements Serializable {
         if (hour > 12) {
             hourString = (hour - 12) + "";
             format = "PM";
-        } else if (hour == 0) {
+        } else if (hour == 12) {
             hourString = "12";
-            format = "PM";
+            format = "AM";
         } else {
             hourString = hour + "";
             format = "AM";
@@ -77,6 +77,6 @@ public class Alarm implements Serializable {
         } else {
             minitueString = "" + minute;
         }
-        return hourString + ":" + minitueString + format;
+        return hourString + ":" + minitueString + " " + format;
     }
 }

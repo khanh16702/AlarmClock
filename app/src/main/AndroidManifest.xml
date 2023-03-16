@@ -28,6 +28,7 @@
         <activity android:name=".AddActivity"/>
         <activity android:name=".TimerActivity"/>
         <activity android:name=".NotificationActivity"/>
+        <activity android:name=".CountDownActivity"/>
         <receiver android:name=".AlarmReceiver"/>
         <service android:name=".Music"
             android:enabled="true"/>

@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView listView;
     private Button btnAdd;
     private Button btnTimer;
+    private Button btnCountDown;
     private TextView txtWelcome;
     private int SelectedAlarmId;
     private static final int REQUEST_CODE = 1000;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         txtWelcome = findViewById(R.id.txtWelcome);
         btnTimer = findViewById(R.id.timer);
         btnAdd = findViewById(R.id.add);
+        btnCountDown = findViewById(R.id.countdown);
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,6 +94,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent toTimer = new Intent(MainActivity.this, TimerActivity.class);
                 startActivityForResult(toTimer, REQUEST_CODE);
+            }
+        });
+
+        btnCountDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent toCountDown = new Intent(MainActivity.this, CountDownActivity.class);
+                startActivityForResult(toCountDown, REQUEST_CODE);
             }
         });
     }

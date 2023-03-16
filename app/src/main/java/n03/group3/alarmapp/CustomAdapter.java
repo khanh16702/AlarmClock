@@ -80,6 +80,7 @@ public class CustomAdapter extends BaseAdapter {
 
                 if (!isChecked && selectedAlarm.toString().equals(MainActivity.activeAlarm)) {
                     serviceIntent.putExtra("extra", "off");
+                    serviceIntent.putExtra("active", "");
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(context, i, serviceIntent,
                             PendingIntent.FLAG_UPDATE_CURRENT);
                     alarmManager.cancel(pendingIntent);
