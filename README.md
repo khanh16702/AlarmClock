@@ -7,7 +7,7 @@ Sử dụng phiên bản Android Studio Cá heo
 - Đồng hồ bấm giờ
 
 ## Cấu hình và liên quan
-* Cấu hình trong build.gradle (app)
+* Cấu hình trong build.gradle (Module: AlarmApp.app)
 
     
         plugins {
@@ -55,3 +55,4 @@ Sử dụng phiên bản Android Studio Cá heo
         }
     
 * Máy ảo sử dụng để thử nghiệm: Pixel 6 API 30
+* Máy thật sử dụng để thử nghiệm: Samsung Galaxy A50s (Android 11)
