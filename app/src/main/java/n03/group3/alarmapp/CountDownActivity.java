@@ -16,7 +16,7 @@ public class CountDownActivity extends AppCompatActivity {
     SeekBar timerSeekBar;
     Boolean counterIsActive = true;
     Button goBtn;
-    Button stopBtn, backBtn;
+    Button stopBtn, backBtn, continueBtn;
     Button resetBtn;
     CountDownTimer countDownTimer;
     long timeRemaining;
@@ -39,7 +39,7 @@ public class CountDownActivity extends AppCompatActivity {
         timeStartCurrent = timerSeekBar.getProgress();
         stopBtn = findViewById(R.id.stopBtn);
         resetBtn = findViewById(R.id.resetBtn);
-
+        continueBtn = findViewById(R.id.continueBtn);
 
         timerSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -64,6 +64,7 @@ public class CountDownActivity extends AppCompatActivity {
                 if (counterIsActive) {
                     currentTimerStr = timerTextView.getText();
                     timeStartCurrent = timerSeekBar.getProgress();
+                    timeStart = timeStartCurrent;
                     startCountdown(v);
                     stopBtn.setVisibility(View.VISIBLE);
                     resetBtn.setVisibility(View.VISIBLE);
@@ -71,18 +72,35 @@ public class CountDownActivity extends AppCompatActivity {
                     pauseCountdown();
                     stopBtn.setVisibility(View.GONE);
                     resetBtn.setVisibility(View.GONE);
+                    goBtn.setVisibility(View.GONE);
+                    continueBtn.setVisibility(View.VISIBLE);
                 }
             }
         });
+
+        continueBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startCountdown(v);
+                continueBtn.setVisibility(View.GONE);
+                stopBtn.setVisibility(View.VISIBLE);
+                resetBtn.setVisibility(View.VISIBLE);
+                goBtn.setVisibility(View.VISIBLE);
+            }
+        });
+
         stopBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                continueBtn.setVisibility(View.GONE);
+                goBtn.setVisibility(View.VISIBLE);
                 resetCurrentTimer();
             }
         });
         resetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                stopBtn.setVisibility(View.GONE);
                 resetTimer();
             }
         });
@@ -128,7 +146,6 @@ public class CountDownActivity extends AppCompatActivity {
 
     public void pauseCountdown() {
         countDownTimer.cancel();
-        goBtn.setText("Continue");// cập nhật thời gian còn lại
         timeStart = (int) timeRemaining;
         counterIsActive = true;
     }
