@@ -3,6 +3,8 @@ package n03.group3.alarmapp;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +23,7 @@ public class AddActivity extends AppCompatActivity {
     private Alarm alarm;
     private boolean needRefresh;
     private boolean isUpdating;
+    Bundle extras;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -34,7 +37,7 @@ public class AddActivity extends AppCompatActivity {
         buttonSave = findViewById(R.id.button_save);
         buttonCancel = findViewById(R.id.button_cancel);
 
-        Bundle extras = getIntent().getExtras();
+        extras = getIntent().getExtras();
         if (extras != null) {
             timePicker.setHour(extras.getInt("hour"));
             timePicker.setMinute(extras.getInt("minute"));
@@ -49,12 +52,17 @@ public class AddActivity extends AppCompatActivity {
                 int minute = timePicker.getCurrentMinute();
                 String name = editText.getText().toString();
 
+                boolean status = true;
+                if (extras != null)
+                    status = extras.getBoolean("status");
+
                 DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-                alarm = new Alarm(hour, minute, true, name);
+                alarm = new Alarm(hour, minute, status, name);
 
                 if (isUpdating) {
                     alarm.setId(extras.getInt("id"));
-                    db.updateAlarm(alarm);
+                    int row = db.updateAlarm(alarm);
+                    Log.d("update db", row + "");
                 }
                 else {
                     db.addAlarm(alarm);
@@ -74,6 +82,7 @@ public class AddActivity extends AppCompatActivity {
 
     @Override
     public void finish() {
+        Log.d("finish called", "finish Called");
         Intent data = new Intent();
         data.putExtra("needRefresh", needRefresh);
         this.setResult(RESULT_OK, data);

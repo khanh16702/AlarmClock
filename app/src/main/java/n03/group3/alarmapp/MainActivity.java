@@ -11,6 +11,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -125,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 b.putString("name", a.getName());
                 b.putInt("hour", a.getHour());
                 b.putInt("minute", a.getMinute());
+                b.putBoolean("status", a.getStatus());
                 intent.putExtras(b);
                 startActivityForResult(intent, 200);
                 break;
@@ -136,6 +138,18 @@ public class MainActivity extends AppCompatActivity {
                 alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        // Clear all previous alarm service
+                        Context context = getApplicationContext();
+                        final AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                        final Intent serviceIntent = new Intent(context, AlarmReceiver.class);
+//                        serviceIntent.putExtra("alarmName", alarmList.get(i).getName());
+//                        serviceIntent.putExtra("extra", "off");
+//                        serviceIntent.putExtra("active", "");
+                        Log.d("index = ", i + "");
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, SelectedAlarmId, serviceIntent,
+                                PendingIntent.FLAG_UPDATE_CURRENT);
+                        alarmManager.cancel(pendingIntent);
+
                         Alarm a = alarmList.get(SelectedAlarmId);
                         db.deleteAlarm(a.getId());
                         alarmList.clear();
@@ -167,8 +181,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
+        if (resultCode == Activity.RESULT_OK) {
             boolean needRefresh = data.getExtras().getBoolean("needRefresh");
+            Log.d("refresh", "refresh called");
             if (needRefresh) {
                 alarmList.clear();
                 List<Alarm> list = db.getAllAlarms();

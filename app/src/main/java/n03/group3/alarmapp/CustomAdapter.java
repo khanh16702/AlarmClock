@@ -78,7 +78,7 @@ public class CustomAdapter extends BaseAdapter {
                 MainActivity.alarmList.addAll(list);
                 notifyDataSetChanged();
 
-                if (!isChecked && selectedAlarm.toString().equals(MainActivity.activeAlarm)) {
+                if (!isChecked) {
                     serviceIntent.putExtra("extra", "off");
                     serviceIntent.putExtra("active", "");
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(context, i, serviceIntent,
@@ -94,6 +94,8 @@ public class CustomAdapter extends BaseAdapter {
             serviceIntent.putExtra("active", selectedAlarm.toString());
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, i, serviceIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
+
+            alarmManager.cancel(pendingIntent);
             alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }
 

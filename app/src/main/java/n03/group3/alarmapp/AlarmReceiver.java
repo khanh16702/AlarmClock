@@ -27,6 +27,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 isRunning = true;
             }
         }
+
         Intent mIntent = new Intent(context, Music.class);
         if (string.equals("on") && !isRunning) {
             context.startService(mIntent);

@@ -82,7 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_ALARM_MINUTE, alarm.getMinute());
         values.put(COLUMN_ALARM_STATUS, alarm.getStatus());
         values.put(COLUMN_ALARM_NAME, alarm.getName());
-        return db.update(TABLE_NAME, values, COLUMN_ALARM_ID + " = ? ",
+        return db.update(TABLE_NAME, values, COLUMN_ALARM_ID + " = ?",
                 new String[]{String.valueOf(alarm.getId())});
     }
 
